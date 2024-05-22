@@ -1,0 +1,34 @@
+extends layout
+
+block content
+  - let first = (userData) ? userData.first : ''
+  - let last = (userData) ? userData.last : ''
+  - let email = (userData) ? userData.email : ''
+  p 
+    a(href="/") Back
+  h1 Sign up
+  form(method="POST" novalidate)
+    label(for='first') First name 
+    div: input(type="text" name="first" id="first" value=first)
+    p= (errorMessages && errorMessages.first) ? errorMessages.first : ''
+
+    label(for='last') Last name 
+    div: input(type="text" name="last" id="last" value=last)
+    p= (errorMessages && errorMessages.last) ? errorMessages.last : ''
+
+    label(for='email') Email 
+    div: input(type="email" name="email" id="email" value=email)
+    p= (errorMessages && errorMessages.email) ? errorMessages.email : ''
+
+    label(for='password') Password
+    div: input(type="password" name="password" id="password")
+
+    label(for='confirm-password') Confirm password 
+    div: input(type="password" name="confirmpassword" id="confirm-password")
+
+    label(for='admin') Admin passcode (only for admins)
+    div: input(type="password" name="adminpasscode" id="admin")
+
+    div: input(type="submit" value="Sign up")
+
+    

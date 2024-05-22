@@ -2,6 +2,7 @@ require('dotenv').config()
 
 const express = require('express')
 const mongoose = require('mongoose')
+const routes = require('./routes/index')
 
 const app = express()
 const PORT = process.PORT || 3000
@@ -17,8 +18,7 @@ app.use(express.json())
 app.use(express.urlencoded({ extended: false }))
 app.set('view engine', 'pug')
 
-app.get('/', (req, res, next) => {
-	res.render('index')
-})
+// # ROUTES
+app.use(routes)
 
 app.listen(PORT, () => console.log('App running on port ' + PORT))
