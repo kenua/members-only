@@ -1,0 +1,19 @@
+extends layout
+
+block content
+  - let emailVal = (userData) ? userData.email : ''
+  p 
+    a(href="/") Back
+  h1 Log in
+  form(method="POST" novalidate)
+    label(for='email') Email 
+    div: input(type="email" name="email" id="email" value=emailVal)
+    p= (errorMessages && errorMessages.email) ? errorMessages.email : ''
+
+    label(for='password') Password
+    div: input(type="password" name="password" id="password")
+    p= (errorMessages && errorMessages.password) ? errorMessages.password : ''
+
+    div: input(type="submit" value="Log in up")
+
+    

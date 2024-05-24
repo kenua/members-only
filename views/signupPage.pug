@@ -1,33 +1,36 @@
 extends layout
 
 block content
-  - let first = (userData) ? userData.first : ''
-  - let last = (userData) ? userData.last : ''
-  - let email = (userData) ? userData.email : ''
+  - let firstVal = (userData) ? userData.first : ''
+  - let lastVal = (userData) ? userData.last : ''
+  - let emailVal = (userData) ? userData.email : ''
   p 
     a(href="/") Back
   h1 Sign up
   form(method="POST" novalidate)
     label(for='first') First name 
-    div: input(type="text" name="first" id="first" value=first)
+    div: input(type="text" name="first" id="first" value=firstVal)
     p= (errorMessages && errorMessages.first) ? errorMessages.first : ''
 
     label(for='last') Last name 
-    div: input(type="text" name="last" id="last" value=last)
+    div: input(type="text" name="last" id="last" value=lastVal)
     p= (errorMessages && errorMessages.last) ? errorMessages.last : ''
 
     label(for='email') Email 
-    div: input(type="email" name="email" id="email" value=email)
+    div: input(type="email" name="email" id="email" value=emailVal)
     p= (errorMessages && errorMessages.email) ? errorMessages.email : ''
 
     label(for='password') Password
     div: input(type="password" name="password" id="password")
+    p= (errorMessages && errorMessages.password) ? errorMessages.password : ''
 
     label(for='confirm-password') Confirm password 
     div: input(type="password" name="confirmpassword" id="confirm-password")
+    p= (errorMessages && errorMessages.confirmpassword) ? errorMessages.confirmpassword : ''
 
     label(for='admin') Admin passcode (only for admins)
     div: input(type="password" name="adminpasscode" id="admin")
+    p= (errorMessages && errorMessages.adminpasscode) ? errorMessages.adminpasscode : ''
 
     div: input(type="submit" value="Sign up")
 
