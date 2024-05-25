@@ -10,8 +10,10 @@ const {
 } = require('../utils/validationSchemas')
 const User = require('../models/user')
 const { generatePassword } = require('../utils/password')
+const passport = require('passport')
 
 router.get('/', (req, res, next) => {
+  //console.log(req.session)
   res.render('homePage')
 })
 
@@ -82,6 +84,20 @@ router.post('/signup',
 
 router.get('/login', (req, res, next) => {
   res.render('loginPage')
+})
+
+router.post('/login',
+  passport.authenticate('local'),
+  (req, res, next) => {
+    res.redirect('/')
+  }
+)
+
+router.get('/logout', (req, res, next) => {
+  req.logout((err) => {
+    if (err) return next(err)
+    res.redirect('/')
+  })
 })
 
 module.exports = router
