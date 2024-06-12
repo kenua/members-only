@@ -1,11 +1,13 @@
 extends layout
 
 block content
-  - let emailVal = (userData) ? userData.email : ''
+  - let emailVal = (email) ? email : ''
+  - let noUserMessage = (noUser && noUser[0]) ? noUser[0] : ''
   p 
     a(href="/") Back
   h1 Log in
   form(method="POST" novalidate)
+    p= noUserMessage
     label(for='email') Email 
     div: input(type="email" name="email" id="email" value=emailVal)
     p= (errorMessages && errorMessages.email) ? errorMessages.email : ''

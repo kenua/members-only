@@ -48,6 +48,24 @@ const signupValidationSchema = {
   },
 }
 
+const loginValidationSchema = {
+  email: {
+    isEmail: {
+      errorMessage: 'Provide a valid email address',
+    },
+  },
+  password: {
+    notEmpty: {
+      errorMessage: 'This field cannot be empty.'
+    },
+    isLength: {
+      options: { min: 8 },
+      errorMessage: 'Password needs to be at least 8 characters long.',
+    },
+  },
+}
+
 module.exports = {
   signupValidationSchema,
+  loginValidationSchema,
 }

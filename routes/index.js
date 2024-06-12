@@ -6,7 +6,8 @@ const {
   matchedData
 } = require('express-validator')
 const { 
-  signupValidationSchema
+  signupValidationSchema,
+  loginValidationSchema
 } = require('../utils/validationSchemas')
 const User = require('../models/user')
 const { generatePassword } = require('../utils/password')
@@ -83,14 +84,37 @@ router.post('/signup',
 )
 
 router.get('/login', (req, res, next) => {
-  res.render('loginPage')
+  res.render('loginPage', { noUser: req.session.messages })
 })
 
-router.post('/login',
-  passport.authenticate('local'),
+router.post('/login', 
+  checkSchema(loginValidationSchema, ['body']),
   (req, res, next) => {
-    res.redirect('/')
-  }
+    const result = validationResult(req)
+
+    // send back to login page if there's an error
+    if (!result.isEmpty()) {
+      const mappedResult = result.mapped()
+      const mappedErrors = {}
+
+      for (let key in mappedResult) {
+        mappedErrors[key] = mappedResult[key].msg
+      }
+
+      return res.render('loginPage', { 
+        email: req.body.email,
+        errorMessages: mappedErrors     
+      })
+    }
+
+    return next()
+  },
+  passport.authenticate('local', { 
+    successRedirect: '/', 
+    failureRedirect: '/login', 
+    failureMessage:
+      'There is no such user in our database. Please sign up first before logging in.',
+  })
 )
 
 router.get('/logout', (req, res, next) => {
