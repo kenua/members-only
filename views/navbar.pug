@@ -1,12 +1,31 @@
 nav
+  - let currentUser = (user) ? user : null
+  
   ul 
-    li 
-      a(href="/signup") Sign up
-    li 
-      a(href="/login") Log in
-    li 
-      a(href="#") Create message 
-    li 
-      a(href="#") Join the club
-    li 
-      a(href="/logout") Log out
+    //- Prints admin links
+    if currentUser && currentUser.admin
+      li 
+        a(href="/logout") Log out
+
+    //- Print member links
+    else if currentUser && currentUser.member
+      li 
+        a(href="#") Create message 
+      li 
+        a(href="/logout") Log out
+
+    //- Print non-member links
+    else if currentUser && !currentUser.member
+      li 
+        a(href="#") Create message 
+      li 
+        a(href="/joinclub") Join the club
+      li 
+        a(href="/logout") Log out
+
+    //- Print unregistered user links
+    else 
+      li 
+        a(href="/signup") Sign up
+      li 
+        a(href="/login") Log in

@@ -3,7 +3,8 @@ const router = express.Router()
 const { 
   checkSchema,
   validationResult,
-  matchedData
+  matchedData,
+  body
 } = require('express-validator')
 const { 
   signupValidationSchema,
@@ -14,7 +15,7 @@ const { generatePassword } = require('../utils/password')
 const passport = require('passport')
 
 router.get('/', (req, res, next) => {
-  //console.log(req.session)
+  console.log(req.user)
   res.render('homePage')
 })
 
@@ -115,6 +116,42 @@ router.post('/login',
     failureMessage:
       'There is no such user in our database. Please sign up first before logging in.',
   })
+)
+
+router.get('/joinclub', async (req, res, next) => {
+  // kick out client if it's an admin, member, or unregistered user
+  if (!req.user) return res.redirect('/')
+  if (req.user && req.user.member) return res.redirect('/')
+  if (req.user && req.user.admin) return res.redirect('/')
+
+  res.render('joinClubForm')
+})
+
+router.post('/joinclub', 
+  body('passcode')
+    .notEmpty()
+    .withMessage('This field cannot be empty.')
+    .trim(),
+  async (req, res, next) => {
+    const result = validationResult(req)
+
+    if (!result.isEmpty()) {
+      return res.render(
+        'joinClubForm', 
+        { errorMessage: result.mapped().passcode.msg }
+      )
+    }
+
+    if (req.body.passcode !== process.env.CLUBPASSCODE) {
+      return res.render(
+        'joinClubForm', 
+        { errorMessage: 'Wrong passcode.' }
+      )
+    }
+
+    await User.updateOne({ _id: req.user._id }, { member: true }).exec()
+    return res.redirect('/')
+  }
 )
 
 router.get('/logout', (req, res, next) => {

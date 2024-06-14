@@ -58,8 +58,6 @@ const verify = new localStrategy(
 
 passport.use(verify)
 passport.serializeUser((user, done) => {
-	// maybe replace the id with the user's full name,
-	// membership and admin status 🤔
 	return done(null, user.id)
 })
 passport.deserializeUser(async (userId, done) => {
@@ -76,6 +74,11 @@ passport.deserializeUser(async (userId, done) => {
 
 app.use(passport.initialize())
 app.use(passport.session())
+
+app.use((req, res, next) => {
+	res.locals.user = req.user
+	next()
+})
 
 // # ROUTES
 app.use(routes)

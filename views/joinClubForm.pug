@@ -1,0 +1,14 @@
+extends layout
+
+block content
+  p 
+    a(href="/") Back
+  h1 Join the club
+  p Enter passcode to be part of the club. 😎🤙
+
+  form(method="POST" novalidate)
+    label(for='passcode')  
+    div: input(type="password" name="passcode" id="passcode")
+    p= (errorMessage ) ? errorMessage : ''
+
+    div: input(type="submit" value="Enter")
