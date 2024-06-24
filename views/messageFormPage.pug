@@ -1,0 +1,16 @@
+extends layout
+
+block content
+  p 
+    a(href="/") Back
+  h1 Create new message
+  form(method="POST" novalidate)
+    div: label(for='message') Write your message:
+    textarea(name="messagebody" id="message")
+    p= (errorMessage) ? errorMessage : ''
+
+    input(type="hidden" name="userid" value=userid)
+
+    div: input(type="submit" value="Post message")
+
+    

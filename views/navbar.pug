@@ -10,14 +10,14 @@ nav
     //- Print member links
     else if currentUser && currentUser.member
       li 
-        a(href="#") Create message 
+        a(href="/create") Create message 
       li 
         a(href="/logout") Log out
 
     //- Print non-member links
     else if currentUser && !currentUser.member
       li 
-        a(href="#") Create message 
+        a(href="/create") Create message 
       li 
         a(href="/joinclub") Join the club
       li 

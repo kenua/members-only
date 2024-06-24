@@ -11,12 +11,14 @@ const {
   loginValidationSchema
 } = require('../utils/validationSchemas')
 const User = require('../models/user')
+const Message = require('../models/message')
 const { generatePassword } = require('../utils/password')
 const passport = require('passport')
 
-router.get('/', (req, res, next) => {
-  console.log(req.user)
-  res.render('homePage')
+router.get('/', async (req, res, next) => {
+  const messages = await Message.find().populate('author').exec()
+
+  res.render('homePage', { user: req.user, messages: messages })
 })
 
 router.get('/signup', (req, res, next) => {
@@ -153,6 +155,53 @@ router.post('/joinclub',
     return res.redirect('/')
   }
 )
+
+router.get('/create', (req, res, next) => {
+  // kick out client if it's an unregistered user
+  if (!req.user) return res.redirect('/')
+
+  res.render('messageFormPage', { userid: req.user._id })
+})
+
+router.post('/create', 
+  body('messagebody')
+    .notEmpty()
+    .withMessage('This field cannot be empty.')
+    .trim()
+    .isLength({min: 1})
+    .withMessage('Your message is too short. ;)'),
+  async (req, res, next) => {
+    const result = validationResult(req)
+
+    if (!result.isEmpty()) {
+      return res.render('messageFormPage', { 
+        userid: req.user._id,
+        errorMessage: result.mapped().messagebody.msg,
+      })
+    }
+
+    try {
+      const newMessage = new Message({
+        author: req.body.userid,
+        message: req.body.messagebody.replace(/[\<\>]/g, ''),
+      })
+  
+      await newMessage.save()
+      return res.redirect('/')
+    } catch (err) {
+      return next(err)
+    }
+  }
+)
+
+router.get('/delete/:id', async (req, res, next) => {
+  try {
+    await Message.deleteOne({ _id: req.params.id })
+    res.redirect('/')
+  } catch (err) {
+    next(err)
+  }
+})
 
 router.get('/logout', (req, res, next) => {
   req.logout((err) => {

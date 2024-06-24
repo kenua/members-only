@@ -1,6 +1,27 @@
 extends layout
 
 block content
+  - let isAdmin = (user && user.admin) ? user.admin : false
+  - let isMember = (user && user.member) ? user.member : false
+  - let deleteLink = (isAdmin) ? null : ''
+
   h1 Messages
-  p No messages yet...
+
+  if (messages.length > 0) 
+    p #{messages.length} Messages
+
+    each message in messages
+      article
+        if (isAdmin || isMember)
+          p
+            | #{`${message.author.first} ${message.author.last}`}
+            | - #{message.createdAt.toLocaleDateString()} 
+            if (isAdmin) 
+              | #[a(href=`/delete/${message._id}`) Delete]
+
+        p= message.message
+      hr
+
+  else 
+    p No messages yet...
   include navbar.pug
