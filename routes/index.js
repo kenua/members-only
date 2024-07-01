@@ -24,6 +24,7 @@ const {
   postLogIn,
   logOut
 } = require('../controllers/auth')
+const checkRole = require('../utils/checkRole')
 
 router.get('/', getHome)
 
@@ -47,7 +48,12 @@ router.post('/login',
   })
 )
 
-router.get('/joinclub', getJoinClub)
+router.use('/joinclub', 
+  checkRole({ user: true, admin: false, member: false }, '/')
+)
+router.get('/joinclub',
+  getJoinClub
+)
 
 router.post('/joinclub', 
   body('passcode')
@@ -57,7 +63,11 @@ router.post('/joinclub',
   postJoinClub
 )
 
-router.get('/create', getMessageForm)
+router.use('/create', checkRole({ user: true }))
+
+router.get('/create', 
+  getMessageForm
+)
 
 router.post('/create', 
   body('messagebody')
@@ -69,7 +79,10 @@ router.post('/create',
   postMessageForm
 )
 
-router.get('/delete/:id', getDeleteMessage)
+router.get('/delete/:id', 
+  checkRole({ user: true, admin: true }), 
+  getDeleteMessage
+)
 
 router.get('/logout', logOut)
 

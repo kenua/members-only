@@ -1,0 +1,7 @@
+extends layout
+
+block content
+  - let errStatus = errorStatus ? errorStatus : 'Error'
+  - let errMsg = errorMessage ? errorMessage : 'Something went wrong.'
+  h1 #{errStatus}
+  p #{errMsg}

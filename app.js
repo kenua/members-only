@@ -17,7 +17,7 @@ const PORT = process.PORT || 3000
 mongoose
 	.connect(process.env.MONGO_URL)
 	.then(() => console.log('Connected to DB'))
-	.catch(err => console.log('DB error: ' + err.message))
+	.catch(err => console.log(err))
 
 // # EXPRESS CONFIG
 app.use(express.json())
@@ -82,5 +82,22 @@ app.use((req, res, next) => {
 
 // # ROUTES
 app.use(routes)
+
+// # ERROR HANDLERS
+app.use((req, res, next) => {
+	let errorStatus = 404
+	let errorMessage = 'Page not found. The resource your looking for does not exist!'
+
+	res.status(errorStatus)
+	res.render('error', { errorStatus, errorMessage })
+})
+
+app.use((err, req, res, next) => {
+	let errorStatus = err.status || 500
+	let errorMessage = err.message || 'Internal server error! Something went wrong. 🤕'
+
+	res.status(errorStatus)
+	res.render('error', { errorStatus, errorMessage })
+})
 
 app.listen(PORT, () => console.log('App running on port ' + PORT))

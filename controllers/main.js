@@ -5,17 +5,16 @@ const User = require('../models/user')
 const Message = require('../models/message')
 
 module.exports.getHome = async (req, res, next) => {
-  const messages = await Message.find().populate('author').exec()
-
-  res.render('homePage', { user: req.user, messages: messages })
+  try {
+    const messages = await Message.find().populate('author').exec()
+  
+    res.render('homePage', { user: req.user, messages: messages })
+  } catch (err) {
+    next(err)
+  }
 }
 
 module.exports.getJoinClub = async (req, res, next) => {
-  // kick out client if it's an admin, member, or unregistered user
-  if (!req.user) return res.redirect('/')
-  if (req.user && req.user.member) return res.redirect('/')
-  if (req.user && req.user.admin) return res.redirect('/')
-
   res.render('joinClubForm')
 }
 
@@ -41,9 +40,6 @@ module.exports.postJoinClub = async (req, res, next) => {
 }
 
 module.exports.getMessageForm = (req, res, next) => {
-  // kick out client if it's an unregistered user
-  if (!req.user) return res.redirect('/')
-
   res.render('messageFormPage', { userid: req.user._id })
 }
 
